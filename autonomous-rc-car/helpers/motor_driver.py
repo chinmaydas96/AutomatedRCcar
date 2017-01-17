@@ -67,18 +67,17 @@ def get_pwm_imstance_front():
     """Returns a PWM instance"""
     return GPIO.PWM(FRONT_MOTOR_ENABLE_PIN, PWM_FREQUENCY)
 
-def start_pwm(front_pwm):
-    """Starts the PWM with the initial duty cycle"""
-    front_pwm.start(INITIAL_PWM_DUTY_CYCLE)
-
 def start_pwm_front(front_pwm):
     """Starts the PWM with the initial duty cycle"""
+   
     front_pwm.start(INITIAL_PWM_DUTY_CYCLE)
+    
 def start_pwm_back(back_pwm):
     """Starts the PWM with the initial duty cycle"""
     front_pwm.start(INITIAL_PWM_DUTY_CYCLE)
 
 
-def change_pwm_duty_cycle(pwm, duty_cycle):
+def change_pwm_duty_cycle(front_pwm,back_pwm,duty_cycle):
     """Change the PWM duty cycle"""
-    pwm.ChangeDutyCycle(duty_cycle)
+    front_pwm.ChangeDutyCycle(duty_cycle)
+    back_pwm.ChangeDutyCycle(duty_cycle)
