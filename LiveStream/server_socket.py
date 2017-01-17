@@ -1,11 +1,11 @@
 import threading
-import SocketServer
+import socketserver
 import cv2
 import numpy as np
 import math
 
 
-class VideoStreamHandler(SocketServer.StreamRequestHandler):
+class VideoStreamHandler(socketserver.StreamRequestHandler):
 
     def handle(self):
 
@@ -23,15 +23,15 @@ class VideoStreamHandler(SocketServer.StreamRequestHandler):
                     cv2.imshow('image', image)
                     cv2.waitKey(30)
 
-            print "Destroying"
+            print ("Destroying")
             cv2.destroyAllWindows()
 
         finally:
-            print "Connection closed on thread 1"
+            print ("Connection closed on thread 1")
 
 
 def server_thread(host, port):
-    server = SocketServer.TCPServer((host, port), VideoStreamHandler)
+    server = socketserver.TCPServer((host, port), VideoStreamHandler)
     server.serve_forever()
 
 video_thread = threading.Thread(target=server_thread('192.168.1.7', 8000))
