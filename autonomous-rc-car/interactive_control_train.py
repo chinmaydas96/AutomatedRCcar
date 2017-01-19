@@ -11,6 +11,7 @@ import helpers.image as image_helper
 
 UP = LEFT = DOWN = RIGHT = ACCELERATE = DECELERATE = False
 
+
 def get_keys():
     """Returns a tuple of (UP, DOWN, LEFT, RIGHT, change, ACCELERATE,
     DECELERATE, stop) representing which keys are UP or DOWN and
@@ -24,10 +25,11 @@ def get_keys():
         pygame.K_UP: 'UP',
         pygame.K_DOWN: 'DOWN',
         pygame.K_ESCAPE: 'QUIT',
-        pygame.K_q: 'QUIT',
-        pygame.K_w: 'ACCELERATE',
-        pygame.K_s: 'DECELERATE'
+        pygame.K_q: 'QUIT'
     }
+    # pygame.K_w: 'ACCELERATE',
+    # pygame.K_s: 'DECELERATE'
+
     for event in pygame.event.get():
         if event.type in {pygame.K_q, pygame.K_ESCAPE}:
             stop = True
@@ -36,7 +38,7 @@ def get_keys():
             change = (event.key in key_to_global_name)
             if event.key in key_to_global_name:
                 globals()[key_to_global_name[event.key]] = down
-    return (UP, DOWN, LEFT, RIGHT, change, ACCELERATE, DECELERATE, stop)
+    return (UP, DOWN, LEFT, RIGHT, change, stop)
 
 
 def interactive_control():
@@ -48,28 +50,32 @@ def interactive_control():
         camera.framerate = configuration.PICAMERA_FRAMERATE
         time.sleep(configuration.PICAMERA_WARM_UP_TIME)
         # GPIO.output(BACK_MOTOR_ENABLE_PIN, True)
-        back_pwm = motor_driver_helper.get_pwm_imstance_back()
-        front_pwm = motor_driver_helper.get_pwm_imstance_front()
+        # back_pwm = motor_driver_helper.get_pwm_imstance_back()
+        # front_pwm = motor_driver_helper.get_pwm_imstance_front()
 
-        motor_driver_helper.start_pwm_front(front_pwm)
-        motor_driver_helper.start_pwm_back(back_pwm)
+        # motor_driver_helper.start_pwm_front(front_pwm)
+        # motor_driver_helper.start_pwm_back(back_pwm)
 
         command = 'idle'
         duty_cycle = configuration.INITIAL_PWM_DUTY_CYCLE
         while True:
-            up_key, down, left, right, change, accelerate, decelerate, stop = get_keys()
+            up_key, down, left, right, change, stop = get_keys()
             if stop:
                 break
-            if accelerate:
-                duty_cycle = duty_cycle + 3 if (duty_cycle + 3) <= 100 else duty_cycle
-                motor_driver_helper.change_pwm_duty_cycle(front_pwm, duty_cycle)
-                motor_driver_helper.change_pwm_duty_cycle(back_pwm, duty_cycle)
-                print("speed: " + str(duty_cycle))
-            if decelerate:
-                duty_cycle = duty_cycle - 3 if (duty_cycle - 3) >= 0 else duty_cycle
-                motor_driver_helper.change_pwm_duty_cycle(front_pwm, duty_cycle)
-                motor_driver_helper.change_pwm_duty_cycle(back_pwm, duty_cycle)
-                print("speed: " + str(duty_cycle))
+            # if accelerate:
+            #     duty_cycle = duty_cycle + \
+            #         3 if (duty_cycle + 3) <= 100 else duty_cycle
+            #     motor_driver_helper.change_pwm_duty_cycle(
+            #         front_pwm, duty_cycle)
+            #     motor_driver_helper.change_pwm_duty_cycle(back_pwm, duty_cycle)
+            #     print("speed: " + str(duty_cycle))
+            # if decelerate:
+            #     duty_cycle = duty_cycle - \
+            #         3 if (duty_cycle - 3) >= 0 else duty_cycle
+            #     motor_driver_helper.change_pwm_duty_cycle(
+            #         front_pwm, duty_cycle)
+            #     motor_driver_helper.change_pwm_duty_cycle(back_pwm, duty_cycle)
+            #     print("speed: " + str(duty_cycle))
             if change:
                 command = 'idle'
                 motor_driver_helper.set_idle_mode()
@@ -98,6 +104,7 @@ def interactive_control():
             clock.tick(30)
         pygame.quit()
 
+
 def setup_interactive_control():
     """Setup the Pygame Interactive Control Screen"""
     pygame.init()
@@ -112,6 +119,7 @@ def setup_interactive_control():
     background.blit(text, text_position)
     screen.blit(background, (0, 0))
     pygame.display.flip()
+
 
 def main():
     """Main function"""
